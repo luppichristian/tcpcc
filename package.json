@@ -1,0 +1,9 @@
+{
+  "name": "tcpcc-visualizer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python serve.py",
+    "test": "node --test"
+  }
+}

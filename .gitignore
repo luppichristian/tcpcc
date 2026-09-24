@@ -1,0 +1,20 @@
+# Node.js dependencies and diagnostics
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+
+# Python runtime cache
+__pycache__/
+*.py[cod]
+
+# Local editor and agent state
+/.vscode/
+/.idea/
+/.vs/
+/.hermes/
+
+# Operating-system files
+Thumbs.db
+.DS_Store

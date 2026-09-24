@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TCP Congestion Control Visualizer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div>
+      <h1>TCP congestion control</h1>
+    </div>
+    <div class="legend" aria-label="Chart legend"><span><i class="line"></i>cwnd</span><span><i
+          class="threshold"></i>ssthresh</span><span><i class="fast"></i>3 ACK fast retransmit</span><span><i
+          class="timeout"></i>timeout</span></div>
+  </header>
+  <main class="workspace">
+    <aside class="controls" aria-label="Simulation settings">
+      <div class="section-title">
+        <h2>Simulation</h2><button id="reset" class="quiet" type="button">Reset</button>
+      </div>
+      <label>Algorithm<select id="algorithm">
+          <option>Tahoe</option>
+          <option>Vegas</option>
+          <option>Reno</option>
+          <option>BIC</option>
+          <option>BBS</option>
+          <option selected>Cubic</option>
+        </select></label>
+      <div class="pair"><label>RTT samples <span>one cwnd update per RTT</span><input id="rounds" type="number" min="1"
+            max="2000" value="120"></label><label>Seed<input id="seed" type="number" value="2026"></label></div>
+      <fieldset>
+        <legend>Network conditions</legend>
+        <div class="pair"><label>Min RTT <span>ms</span><input id="minRtt" type="number" min="1"
+              value="40"></label><label>Max RTT <span>ms</span><input id="maxRtt" type="number" min="1"
+              value="120"></label></div><label>Packet loss <span>% per RTT; decimals allowed</span><input
+            id="lossPercent" type="number" min="0" max="100" step="0.1" value="2"></label>
+      </fieldset>
+      <fieldset>
+        <legend>Sender state</legend>
+        <div class="pair"><label>Initial cwnd <span>MSS</span><input id="initialCwnd" type="number" min="1" step="0.1"
+              value="1"></label><label>Initial ssthresh <span>MSS</span><input id="ssthresh" type="number" min="2"
+              step="0.1" value="16"></label></div>
+      </fieldset>
+      <details>
+        <summary>Algorithm tuning</summary>
+        <div class="pair"><label>Vegas α<input id="vegasAlpha" type="number" min="0.1" step="0.1"
+              value="1"></label><label>Vegas β<input id="vegasBeta" type="number" min="0.2" step="0.1"
+              value="3"></label></div><label>BBS pacing gain<input id="bbsGain" type="number" min="0.1" step="0.05"
+            value="1.25"></label>
+      </details>
+      <button id="run" class="primary" type="button">Run simulation</button>
+      <p class="hint">Same seed + settings gives the same loss timeline. Fast retransmit requires a window large enough
+        to yield three duplicate ACKs.</p>
+    </aside>
+    <section class="monitor">
+      <div class="readout">
+        <div>
+          <p>ACTIVE PROFILE</p><strong id="activeAlgorithm">Cubic</strong>
+        </div>
+        <div>
+          <p>FINAL CWND</p><strong id="finalCwnd">—</strong>
+        </div>
+        <div>
+          <p>MINIMUM RTT</p><strong id="finalRtt">—</strong>
+        </div>
+        <div>
+          <p>EVENTS</p><strong id="eventCount">—</strong>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-heading">
+          <div>
+            <h2>Congestion window per RTT</h2>
+            <p id="chartSubtitle">Run a model to inspect its control trajectory.</p>
+          </div><button id="download" class="quiet" type="button">Download CSV</button>
+        </div>
+        <div class="chart-wrap"><canvas id="chart" aria-label="Congestion window chart" role="img"></canvas></div>
+      </div>
+      <div class="event-panel">
+        <div>
+          <h2>Event trace</h2>
+          <p>Loss decisions and their recovery paths.</p>
+        </div>
+        <ol id="events" class="events"></ol>
+      </div>
+      <p class="model-note"><b>Model boundary:</b> This is an educational RTT-round simulator, not a packet-accurate TCP
+        stack. BBS is a compact BBR-inspired bandwidth/RTT model; BIC and Cubic use their characteristic post-loss
+        growth shapes.</p>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+
+</html>
